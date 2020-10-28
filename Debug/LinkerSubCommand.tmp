@@ -4,4 +4,5 @@
 -input="./kit12_rx62t.obj"
 -input="./resetprg.obj"
 -input="./sbrk.obj"
+-input="./uart.obj"
 -input="./vecttbl.obj"

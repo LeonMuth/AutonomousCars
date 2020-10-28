@@ -10,6 +10,7 @@ C_SRCS += \
 ..\kit12_rx62t.c \
 ..\resetprg.c \
 ..\sbrk.c \
+..\uart.c \
 ..\vecttbl.c 
 
 OBJS += \
@@ -19,6 +20,7 @@ OBJS += \
 ./kit12_rx62t.obj \
 ./resetprg.obj \
 ./sbrk.obj \
+./uart.obj \
 ./vecttbl.obj 
 
 C_DEPS += \
@@ -28,6 +30,7 @@ C_DEPS += \
 ./kit12_rx62t.d \
 ./resetprg.d \
 ./sbrk.d \
+./uart.d \
 ./vecttbl.d 
 
 

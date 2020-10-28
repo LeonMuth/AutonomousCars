@@ -18,7 +18,6 @@ This program supports the following boards:
 /*======================================*/
 #include "iodefine.h"
 
-// TEST
 
 /*======================================*/
 /* Symbol definitions                   */
