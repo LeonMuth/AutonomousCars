@@ -38,7 +38,7 @@ C_DEPS += \
 %.obj: ../%.c %.d
 	@echo 'Building file: $<'
 	@echo 'Invoking: Compiler'
-	ccrx -output=obj=$(dir $@)$(basename $(notdir $@)).obj -include=C:\Renesas\e2studio\Tools\Renesas\RX\1_2_1\include -debug -nologo -section=L=C -cpu=rx600 -endian=big  -lang=c "$<"
+	ccrx -output=obj=$(dir $@)$(basename $(notdir $@)).obj -include=C:\Renesas\e2studio\Tools\Renesas\RX\1_2_1\include -debug -nologo -section=L=C -nologo -section=L=C -cpu=rx600 -endian=big  -lang=c "$<"
 	@echo 'Finished building: $<'
 	@echo.
 

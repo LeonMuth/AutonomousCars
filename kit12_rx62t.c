@@ -17,6 +17,7 @@ This program supports the following boards:
 /* Include                              */
 /*======================================*/
 #include "iodefine.h"
+#include "uart.h"
 
 
 /*======================================*/
@@ -38,6 +39,7 @@ This program supports the following boards:
 #define MASK4_0         0xf0            /* O O O O  X X X X            */
 #define MASK0_4         0x0f            /* X X X X  O O O O            */
 #define MASK4_4         0xff            /* O O O O  O O O O            */
+
 
 /*======================================*/
 /* Prototype declarations               */
@@ -72,14 +74,25 @@ void main(void)
     /* Initialize MCU functions */
     init();
 
+    /* Initialize UART */
+       init_uart();
+       SCI2_Asyn_initial();
+
     /* Initialize micom car state */
     handle( 0 );
     motor( 0, 0 );
 
-
+    //unsigned long xxx = 0;
     while( 1 ) {
-        switch( pattern ) {
 
+    	//if ((xxx++ % 10)==0){
+			char str[12];
+			/*sprintf baut string zusammen*/
+			sprintf(str, "%d\r\n", pattern);
+			uart_str(str);
+    	//}
+
+        switch( pattern ) {
         /****************************************************************
         Pattern-related
          0: wait for switch input
@@ -816,3 +829,11 @@ void handle( int angle )
 /***********************************************************************/
 /* end of file                                                         */
 /***********************************************************************/
+
+
+
+
+
+
+
+
