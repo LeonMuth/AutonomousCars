@@ -58,6 +58,7 @@ void led_out_m( unsigned char led );
 void led_out( unsigned char led );
 void motor( int accele_l, int accele_r );
 void handle( int angle );
+void parseNumbersUart(char a,char b);
 
 /*======================================*/
 /* Global variable declarations         */
@@ -66,11 +67,14 @@ unsigned long   cnt0;
 unsigned long   cnt1;
 int             pattern;
 
+
+
 /***********************************************************************/
 /* Main program                                                        */
 /***********************************************************************/
 void main(void)
 {
+
     /* Initialize MCU functions */
     init();
 
@@ -82,15 +86,15 @@ void main(void)
     handle( 0 );
     motor( 0, 0 );
 
-    //unsigned long xxx = 0;
     while( 1 ) {
 
-    	//if ((xxx++ % 10)==0){
-			char str[12];
+
+
+
 			/*sprintf baut string zusammen*/
-			sprintf(str, "%d\r\n", pattern);
-			uart_str(str);
-    	//}
+			// sprintf(str, "%d\r\n", temp);
+			//uart_str(str);
+
 
         switch( pattern ) {
         /****************************************************************
@@ -118,6 +122,7 @@ void main(void)
         ****************************************************************/
 
         case 0:
+        	parseNumbersUart('0',' ');
             /* Wait for switch input */
             if( pushsw_get() ) {
                 pattern = 1;
@@ -134,6 +139,7 @@ void main(void)
             break;
 
         case 1:
+        	parseNumbersUart('1',' ');
             /* Check if start bar is open */
             if( !startbar_get() ) {
                 /* Start!! */
@@ -152,6 +158,10 @@ void main(void)
             break;
 
         case 11:
+        	parseNumbersUart('1','1');
+        	/*uart_chr('1');
+        	uart_chr('1');
+        	uart_chr('\n');*/
             /* Normal trace */
         	if( check_offtrack()){
         		handle(0);
@@ -235,6 +245,7 @@ void main(void)
             break;
 
         case 12:
+        	parseNumbersUart('1','2');
             /* Check end of large turn to right */
             if( check_crossline() ) {   /* Cross line check during large turn */
                 pattern = 21;
@@ -254,6 +265,7 @@ void main(void)
             break;
 
         case 13:
+        	parseNumbersUart('1','3');
             /* Check end of large turn to left */
             if( check_crossline() ) {   /* Cross line check during large turn */
                 pattern = 21;
@@ -273,6 +285,7 @@ void main(void)
             break;
 
         case 21:
+        	parseNumbersUart('2','1');
             /* Processing at 1st cross line */
             led_out( 0x3 );
             handle( 0 );
@@ -282,6 +295,7 @@ void main(void)
             break;
 
         case 22:
+        	parseNumbersUart('2','2');
             /* Read but ignore 2nd line */
             if( cnt1 > 100 ){
                 pattern = 23;
@@ -290,6 +304,7 @@ void main(void)
             break;
 
         case 23:
+        	parseNumbersUart('2','3');
             /* Trace, crank detection after cross line */
             if( sensor_inp(MASK4_4)==0xf8 ) {
                 /* Left crank determined -> to left crank clearing processing */
@@ -335,6 +350,7 @@ void main(void)
             break;
 
         case 31:
+        	parseNumbersUart('3','1');
             /* Left crank clearing processing ? wait until stable */
             if( cnt1 > 200 ) {
                 pattern = 32;
@@ -343,6 +359,7 @@ void main(void)
             break;
 
         case 32:
+        	parseNumbersUart('3','2');
             /* Left crank clearing processing ? check end of turn */
             if( sensor_inp(MASK3_3) == 0x60 ) {
                 led_out( 0x0 );
@@ -352,6 +369,7 @@ void main(void)
             break;
 
         case 41:
+        	parseNumbersUart('4','1');
             /* Right crank clearing processing ? wait until stable */
             if( cnt1 > 200 ) {
                 pattern = 42;
@@ -360,6 +378,7 @@ void main(void)
             break;
 
         case 42:
+        	parseNumbersUart('4','2');
             /* Right crank clearing processing ? check end of turn */
             if( sensor_inp(MASK3_3) == 0x06 ) {
                 led_out( 0x0 );
@@ -369,6 +388,7 @@ void main(void)
             break;
 
         case 51:
+        	parseNumbersUart('5','1');
             /* Processing at 1st right half line detection */
             led_out( 0x2 );
             handle( 0 );
@@ -378,6 +398,7 @@ void main(void)
             break;
 
         case 52:
+        	parseNumbersUart('5','2');
             /* Read but ignore 2nd time */
             if( cnt1 > 100 ){
                 pattern = 53;
@@ -386,6 +407,7 @@ void main(void)
             break;
 
         case 53:
+        	parseNumbersUart('5','3');
             /* Trace, lane change after right half line detection */
             if( sensor_inp(MASK4_4) == 0x00 ) {
                 handle( 15 );
@@ -422,6 +444,7 @@ void main(void)
             break;
 
         case 54:
+        	parseNumbersUart('5','4');
             /* Right lane change end check */
             if( sensor_inp( MASK4_4 ) == 0x3c ) {
                 led_out( 0x0 );
@@ -431,6 +454,7 @@ void main(void)
             break;
 
         case 61:
+        	parseNumbersUart('6','1');
             /* Processing at 1st left half line detection */
             led_out( 0x1 );
             handle( 0 );
@@ -440,6 +464,7 @@ void main(void)
             break;
 
         case 62:
+        	parseNumbersUart('6','2');
             /* Read but ignore 2nd time */
             if( cnt1 > 100 ){
                 pattern = 63;
@@ -448,6 +473,7 @@ void main(void)
             break;
 
         case 63:
+        	parseNumbersUart('6','3');
             /* Trace, lane change after left half line detection */
             if( sensor_inp(MASK4_4) == 0x00 ) {
                 handle( -15 );
@@ -824,6 +850,20 @@ void handle( int angle )
 {
     /* When the servo move from left to right in reverse, replace "-" with "+". */
     MTU3.TGRD = SERVO_CENTER - angle * HANDLE_STEP;
+}
+
+
+
+void parseNumbersUart(char a ,char b){
+	if(cnt0%1000 == 0){
+	char str[4]= {' ', a,b, '\0'};
+	/*str[0] = a;
+	str[1] = b;
+	str[2]= '\n';*/
+
+	uart_str(str);
+	}
+
 }
 
 /***********************************************************************/
